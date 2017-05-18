@@ -13,6 +13,15 @@ import StringIO
 import shutil
 from os import listdir
 from os.path import isfile, join
+import smtplib
+import traceback
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.utils import formatdate
+
+
+
 
 OUTPUT_DIR = 'output'
 
@@ -83,7 +92,7 @@ def toClientAddrHash(bytesArr):
 
 
 def on_parse_started():
-    shutil.rmtree(OUTPUT_DIR)
+    shutil.rmtree(OUTPUT_DIR,ignore_errors=True)
 
     try:
         os.mkdir(OUTPUT_DIR)

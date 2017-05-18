@@ -11,10 +11,10 @@ from logcat_grep import *
 
 class MyTestCase(unittest2.TestCase):
 
-    @unittest2.skip('skip')
     def test_something(self):
-        LogCatGrep().parse_file('aggregated0.2017-04-11T204702.402')
+        LogCatGrep().parse_file('test.bin')
 
+    @unittest2.skip('skip')
     def test_parse_dir(self):
         LogCatGrep().parser_dir('.')
 

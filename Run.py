@@ -3,7 +3,7 @@
 import logging
 import fire
 from logcat_grep import LogCatGrep
-
+import os
 
 
 class CLIAPI(object):
@@ -11,7 +11,10 @@ class CLIAPI(object):
         dir_list = ["/usr/local/seven/usa-ap01/logs/","/usr/local/seven/usa-ap02/logs/"]
         print 'grep_logcat'
         for dir in dir_list:
-            LogCatGrep().parser_dir(dir)
+            if os.path.exists(dir):
+                LogCatGrep().parser_dir(dir)
+                break
+
 
 def main():
     fire.Fire(CLIAPI)
