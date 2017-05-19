@@ -27,6 +27,7 @@ OUTPUT_DIR = 'output'
 
 RECIPIENTS = ['swang@seven.com']
 
+KEY_WORD = "crash_hander.c"
 
 DATETIME_FORMAT_DEFAULT = "%Y-%m-%d %H:%M:%S"
 DATETIME_FORMAT_IN_FILENAME = "%Y-%m-%dT%HC%MC%S"
@@ -110,20 +111,23 @@ def on_file_readed(io,pckuserId,date):
     f = open(filename, 'a')
 
     for i, line in enumerate(alllines):
-        if "crash_hander.c" in line:
+        if KEY_WORD in line:
             find = True
             f.write("".join(alllines[i-5:i+5]))
     if find:
         f.write("{} {}\n".format(pckuserId, date))
     f.close()
 
-def send_email():
+def send_email(grep_filename):
     # zip the output file
     with ZipFile('output/output.zip', 'w') as myzip:
         myzip.write('output/output.txt')
 
     email = Email()
-    email.send(RECIPIENTS,'Logcat Grep Result','Logcat Grep Result',['output/output.zip'])
+    email.send(RECIPIENTS,
+               'Logcat Grep Result on file {}'.format(grep_filename),
+               'Logcat Grep Result for key:{}'.format(KEY_WORD),
+               ['output/output.zip'])
 
 
 
@@ -137,10 +141,8 @@ class LogCatGrep(object):
         print path
         for f in listdir(path):
             if isfile(join(path, f)):
-                print f
                 self.parse_file(join(path, f))
 
-        send_email()
 
 
 
@@ -218,6 +220,6 @@ class LogCatGrep(object):
         finally:
             binaryFile.close()
 
-
+        send_email(aggregated_log_file)
 
 
