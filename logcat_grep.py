@@ -21,6 +21,8 @@ from email.mime.text import MIMEText
 from email.utils import formatdate
 from zipfile import ZipFile
 from Email import Email
+from itertools import islice
+
 
 
 OUTPUT_DIR = 'output'
@@ -118,13 +120,15 @@ def on_file_readed(io,pckuserId,date):
     alllines = io.readlines()
     filename = '{}/output.txt'.format(OUTPUT_DIR)
     f = open(filename, 'a')
-
+    skip_lines = 0
     for i, line in enumerate(alllines):
+        if skip_lines > 0:
+            skip_lines = skip_lines - 1
+            continue
         if KEY_WORD in line and KEY_WORD_REMOVE not in line:
             find = True
-            f.write("line:{}:".format(i))
             f.write("".join(alllines[i-LOGCAT_BEFORE_LINE:i+LOGCAT_AFTER_LINE]))
-            [next(alllines) for _ in range(LOGCAT_AFTER_LINE)]
+            skip_lines = LOGCAT_AFTER_LINE
     if find:
         f.write("{} {}\n".format(pckuserId, date))
     f.close()
