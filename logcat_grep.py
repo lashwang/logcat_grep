@@ -156,7 +156,7 @@ class LogCatGrep(object):
     def parse_file(self,aggregated_log_file):
         last_modified_time = arrow.get(os.path.getmtime(aggregated_log_file)).format('YYYY-MM-DD')
         print 'start parsing file {}, last modified time {}'.format(aggregated_log_file,last_modified_time)
-        if last_modified_time <= FILE_TIME_AFTER:
+        if last_modified_time < FILE_TIME_AFTER:
             print 'skip the file'
             return
         find = False
