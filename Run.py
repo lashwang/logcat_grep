@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import logging
-import fire
+#import fire
 from logcat_grep import LogCatGrep
 import os
 
