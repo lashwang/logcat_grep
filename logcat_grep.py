@@ -19,11 +19,14 @@ from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formatdate
-
-
+from zipfile import ZipFile
+from Email import Email
 
 
 OUTPUT_DIR = 'output'
+
+RECIPIENTS = ['swang@seven.com']
+
 
 DATETIME_FORMAT_DEFAULT = "%Y-%m-%d %H:%M:%S"
 DATETIME_FORMAT_IN_FILENAME = "%Y-%m-%dT%HC%MC%S"
@@ -111,6 +114,13 @@ def on_file_readed(io,pckuserId,date):
 
     f.close()
 
+def send_email():
+    # zip the output file
+    with ZipFile('output/output.zip', 'w') as myzip:
+        myzip.write('output/output.txt')
+
+    email = Email()
+    email.send(RECIPIENTS,'Logcat Grep Result','Logcat Grep Result',['output/output.zip'])
 
 
 
@@ -127,6 +137,7 @@ class LogCatGrep(object):
                 print f
                 self.parse_file(join(path, f))
 
+        send_email()
 
 
 
@@ -188,7 +199,9 @@ class LogCatGrep(object):
                         payload.write(blockBody)
                         bytesNeedsToWrite = bytesNeedsToWrite - curLen
                     payload_data = zlib.decompress(payload.getvalue(), zlib.MAX_WBITS | 16)
-                    self.on_file_readed(StringIO.StringIO(payload_data),pckuserId,arrow.get(pck_start_time).format('YYYY-MM-DD-HH:mm'))
+                    self.on_file_readed(StringIO.StringIO(payload_data),
+                                        pckuserId,
+                                        arrow.get(pck_start_time).format('YYYY-MM-DD-HH:mm'))
                     print pckuserId,arrow.get(pck_start_time).format('YYYY-MM-DD HH:mm')
                 finally:
                     payload.close()

@@ -13,6 +13,7 @@ class MyTestCase(unittest2.TestCase):
 
     def test_something(self):
         LogCatGrep().parse_file('test.bin')
+        send_email()
 
     @unittest2.skip('skip')
     def test_parse_dir(self):
