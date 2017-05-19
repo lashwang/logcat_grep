@@ -11,7 +11,7 @@ class CLIAPI(object):
         dir_list = ["/usr/local/seven/usa-ap01/logs/flume/","/usr/local/seven/usa-ap02/logs/flume/"]
         for dir in dir_list:
             if os.path.exists(dir):
-                print 'start parsing dir'
+                print 'start parsing dir:{}'.format(dir)
                 LogCatGrep().parser_dir(dir)
                 break
 
