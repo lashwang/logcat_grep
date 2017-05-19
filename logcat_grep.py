@@ -30,6 +30,10 @@ RECIPIENTS = ['swang@seven.com']
 KEY_WORD = "crash_handler.c"
 KEY_WORD_REMOVE = "sig_init"
 
+LOGCAT_BEFORE_LINE = 10
+LOGCAT_AFTER_LINE = 10
+
+
 
 FILE_TIME_AFTER = '2017-05-01'
 
@@ -118,7 +122,9 @@ def on_file_readed(io,pckuserId,date):
     for i, line in enumerate(alllines):
         if KEY_WORD in line and KEY_WORD_REMOVE not in line:
             find = True
-            f.write("".join(alllines[i-5:i+5]))
+            f.write("line:{}:".format(i))
+            f.write("".join(alllines[i-LOGCAT_BEFORE_LINE:i+LOGCAT_AFTER_LINE]))
+            [next(alllines) for _ in range(LOGCAT_AFTER_LINE)]
     if find:
         f.write("{} {}\n".format(pckuserId, date))
     f.close()
