@@ -18,7 +18,7 @@ class CLIAPI(object):
 
 def main():
     #fire.Fire(CLIAPI)
-    CLIAPI.grep_logcat()
+    CLIAPI().grep_logcat()
 
 
 if __name__ == "__main__":
