@@ -28,6 +28,8 @@ OUTPUT_DIR = 'output'
 RECIPIENTS = ['swang@seven.com']
 
 KEY_WORD = "crash_handler.c"
+KEY_WORD_REMOVE = "sig_init"
+
 
 FILE_TIME_AFTER = '2017-05-01'
 
@@ -114,7 +116,7 @@ def on_file_readed(io,pckuserId,date):
     f = open(filename, 'a')
 
     for i, line in enumerate(alllines):
-        if KEY_WORD in line:
+        if KEY_WORD in line and KEY_WORD_REMOVE not in line:
             find = True
             f.write("".join(alllines[i-5:i+5]))
     if find:
