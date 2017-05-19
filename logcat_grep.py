@@ -37,7 +37,8 @@ LOGCAT_AFTER_LINE = 10
 
 
 
-FILE_TIME_AFTER = '2017-05-01'
+FILE_TIME_AFTER = '2017-05-05'
+FILE_TIME_BEFORE = '2017-05-06'
 
 
 DATETIME_FORMAT_DEFAULT = "%Y-%m-%d %H:%M:%S"
@@ -173,7 +174,7 @@ class LogCatGrep(object):
     def parse_file(self,aggregated_log_file):
         last_modified_time = arrow.get(os.path.getmtime(aggregated_log_file)).format('YYYY-MM-DD')
         print 'start parsing file {}, last modified time {}'.format(aggregated_log_file,last_modified_time)
-        if last_modified_time < FILE_TIME_AFTER:
+        if last_modified_time < FILE_TIME_AFTER or last_modified_time > FILE_TIME_BEFORE:
             print 'skip the file'
             return
         find = False
