@@ -27,7 +27,7 @@ OUTPUT_DIR = 'output'
 
 RECIPIENTS = ['swang@seven.com']
 
-KEY_WORD = "crash_hander.c"
+KEY_WORD = "crash_handler.c"
 
 FILE_TIME_AFTER = '2017-05-01'
 
