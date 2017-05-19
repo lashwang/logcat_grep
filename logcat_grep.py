@@ -104,14 +104,17 @@ def on_parse_started():
 
 
 def on_file_readed(io,pckuserId,date):
+    find = False
     alllines = io.readlines()
     filename = '{}/output.txt'.format(OUTPUT_DIR)
     f = open(filename, 'a')
-    f.write("{} {}\n".format(pckuserId,date))
+
     for i, line in enumerate(alllines):
         if "crash_hander.c" in line:
+            find = True
             f.write("".join(alllines[i-5:i+5]))
-
+    if find:
+        f.write("{} {}\n".format(pckuserId, date))
     f.close()
 
 def send_email():
@@ -199,11 +202,16 @@ class LogCatGrep(object):
                         blockBody = binaryFile.read(curLen)  # 5M  per writing
                         payload.write(blockBody)
                         bytesNeedsToWrite = bytesNeedsToWrite - curLen
-                    payload_data = zlib.decompress(payload.getvalue(), zlib.MAX_WBITS | 16)
-                    self.on_file_readed(StringIO.StringIO(payload_data),
-                                        pckuserId,
-                                        arrow.get(pck_start_time).format('YYYY-MM-DD-HH:mm'))
-                    print pckuserId,arrow.get(pck_start_time).format('YYYY-MM-DD HH:mm')
+
+                    try:
+                        payload_data = zlib.decompress(payload.getvalue(), zlib.MAX_WBITS | 16)
+                        self.on_file_readed(StringIO.StringIO(payload_data),
+                                            pckuserId,
+                                            arrow.get(pck_start_time).format('YYYY-MM-DD-HH:mm'))
+                    except Exception,error:
+                        print error
+
+                    #print pckuserId,arrow.get(pck_start_time).format('YYYY-MM-DD HH:mm')
                 finally:
                     payload.close()
         #
