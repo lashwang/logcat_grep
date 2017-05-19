@@ -29,6 +29,9 @@ RECIPIENTS = ['swang@seven.com']
 
 KEY_WORD = "crash_hander.c"
 
+FILE_TIME_AFTER = '2017-05-01'
+
+
 DATETIME_FORMAT_DEFAULT = "%Y-%m-%d %H:%M:%S"
 DATETIME_FORMAT_IN_FILENAME = "%Y-%m-%dT%HC%MC%S"
 DATE_FORMAT = "%Y-%m-%d"
@@ -147,8 +150,13 @@ class LogCatGrep(object):
 
 
     def parse_file(self,aggregated_log_file):
+        last_modified_time = arrow.get(os.path.getmtime(aggregated_log_file)).format('YYYY-MM-DD')
+        print 'start parsing file {}, last modified time {}'.format(aggregated_log_file,last_modified_time)
+        if last_modified_time <= FILE_TIME_AFTER:
+            print 'skip the file'
+            return
+
         binaryFile = open(aggregated_log_file, 'rb')
-        print 'start parsing file {}'.format(aggregated_log_file)
         try:
             total_size = os.path.getsize(aggregated_log_file)
             next_position = 0
