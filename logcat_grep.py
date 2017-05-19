@@ -143,6 +143,7 @@ class LogCatGrep(object):
 
     def parse_file(self,aggregated_log_file):
         binaryFile = open(aggregated_log_file, 'rb')
+        print 'start parsing file {}'.format(aggregated_log_file)
         try:
             total_size = os.path.getsize(aggregated_log_file)
             next_position = 0
