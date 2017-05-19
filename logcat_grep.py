@@ -121,16 +121,20 @@ def on_file_readed(io,pckuserId,date):
         f.write("{} {}\n".format(pckuserId, date))
     f.close()
 
+    return find
+
 def send_email(grep_filename):
     # zip the output file
-    with ZipFile('output/output.zip', 'w') as myzip:
-        myzip.write('output/output.txt')
-
+    file = 'output/output.txt'
+    zip_file = 'output/output.zip'
+    with ZipFile(zip_file, 'w') as myzip:
+        myzip.write(file)
     email = Email()
     email.send(RECIPIENTS,
                'Logcat Grep Result on file {}'.format(grep_filename),
                'Logcat Grep Result for key:{}'.format(KEY_WORD),
-               ['output/output.zip'])
+               [zip_file])
+    os.remove(file)
 
 
 
@@ -155,7 +159,7 @@ class LogCatGrep(object):
         if last_modified_time <= FILE_TIME_AFTER:
             print 'skip the file'
             return
-
+        find = False
         binaryFile = open(aggregated_log_file, 'rb')
         try:
             total_size = os.path.getsize(aggregated_log_file)
@@ -215,9 +219,10 @@ class LogCatGrep(object):
 
                     try:
                         payload_data = zlib.decompress(payload.getvalue(), zlib.MAX_WBITS | 16)
-                        self.on_file_readed(StringIO.StringIO(payload_data),
+                        find0 = self.on_file_readed(StringIO.StringIO(payload_data),
                                             pckuserId,
                                             arrow.get(pck_start_time).format('YYYY-MM-DD-HH:mm'))
+                        find = (find or find0)
                     except Exception,error:
                         print error
 
@@ -227,7 +232,7 @@ class LogCatGrep(object):
         #
         finally:
             binaryFile.close()
-
-        send_email(aggregated_log_file)
+        if find:
+            send_email(aggregated_log_file)
 
 
