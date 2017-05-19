@@ -27,7 +27,7 @@ from itertools import islice
 
 OUTPUT_DIR = 'output'
 
-RECIPIENTS = ['swang@seven.com']
+RECIPIENTS = ['swang@seven.com','wli@seven.com','ahu@seven.com','kyang@seven.com','fluo@seven.com','jwang@seven.com']
 
 KEY_WORD = "crash_handler.c"
 KEY_WORD_REMOVE = "sig_init"
@@ -150,7 +150,7 @@ def send_email(grep_filename):
     email = Email()
     email.send(RECIPIENTS,
                'Logcat Grep Result on file {}'.format(grep_filename),
-               'Logcat Grep Result for key:{}'.format(KEY_WORD),
+               'Logcat Grep Result from {} to {} for key:{}'.format(FILE_TIME_AFTER,FILE_TIME_BEFORE,KEY_WORD),
                [zip_file])
     os.remove(file)
 
