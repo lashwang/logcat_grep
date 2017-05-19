@@ -149,7 +149,7 @@ def send_email(grep_filename):
         myzip.write(file)
     email = Email()
     email.send(RECIPIENTS,
-               'Logcat Grep Result on file {}'.format(grep_filename),
+               'Logcat Grep Result From {} to {}'.format(FILE_TIME_AFTER,FILE_TIME_BEFORE),
                'Logcat Grep Result from {} to {} for key:{}'.format(FILE_TIME_AFTER,FILE_TIME_BEFORE,KEY_WORD),
                [zip_file])
     os.remove(file)
