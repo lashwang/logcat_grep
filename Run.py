@@ -8,7 +8,7 @@ import os
 
 class CLIAPI(object):
     def grep_logcat(self):
-        dir_list = ["/usr/local/seven/usa-ap01/logs/","/usr/local/seven/usa-ap02/logs/"]
+        dir_list = ["/usr/local/seven/usa-ap01/logs/flume/","/usr/local/seven/usa-ap02/logs/flume/"]
         print 'grep_logcat'
         for dir in dir_list:
             if os.path.exists(dir):
