@@ -121,16 +121,17 @@ def on_file_readed(io,pckuserId,date):
     filename = '{}/output.txt'.format(OUTPUT_DIR)
     f = open(filename, 'a')
     skip_lines = 0
-    for i, line in enumerate(alllines):
+    for line_number, line in enumerate(alllines):
         if skip_lines > 0:
             skip_lines = skip_lines - 1
             continue
         if KEY_WORD in line and KEY_WORD_REMOVE not in line:
             find = True
-            f.write("".join(alllines[i-LOGCAT_BEFORE_LINE:i+LOGCAT_AFTER_LINE]))
+            f.write("[crash find for user, dump logs]{}\n".format(pckuserId))
+            f.write("".join(alllines[line_number-LOGCAT_BEFORE_LINE:line_number+LOGCAT_AFTER_LINE]))
             skip_lines = LOGCAT_AFTER_LINE
-    if find:
-        f.write("[user]:{} {}\n".format(pckuserId, date))
+
+
     f.close()
 
     return find
