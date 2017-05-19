@@ -32,7 +32,7 @@ RECIPIENTS = ['swang@seven.com']
 KEY_WORD = "crash_handler.c"
 KEY_WORD_REMOVE = "sig_init"
 
-LOGCAT_BEFORE_LINE = 10
+LOGCAT_BEFORE_LINE = 50
 LOGCAT_AFTER_LINE = 10
 
 
@@ -130,7 +130,7 @@ def on_file_readed(io,pckuserId,date):
             f.write("".join(alllines[i-LOGCAT_BEFORE_LINE:i+LOGCAT_AFTER_LINE]))
             skip_lines = LOGCAT_AFTER_LINE
     if find:
-        f.write("{} {}\n".format(pckuserId, date))
+        f.write("[user]:{} {}\n".format(pckuserId, date))
     f.close()
 
     return find
