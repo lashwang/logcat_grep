@@ -11,7 +11,6 @@ from logcat_grep import *
 
 class MyTestCase(unittest2.TestCase):
 
-    @unittest2.skip("skip")
     def test_something(self):
         LogCatGrep().parse_file('test.bin',if_test=True)
 

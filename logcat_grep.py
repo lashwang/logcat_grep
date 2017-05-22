@@ -154,7 +154,7 @@ def send_email(grep_filename,if_test,grep_info):
     zip_file = 'output/output.zip'
     myzip = ZipFile(zip_file, 'w')
     for f in listdir(path):
-        if isfile(join(path, f)):
+        if isfile(join(path, f)) and os.path.splitext(f)[1] == '.log':
             f = os.path.join(path, f)
             myzip.write(f)
 
