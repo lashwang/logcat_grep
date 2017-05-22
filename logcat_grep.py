@@ -195,6 +195,7 @@ class LogCatGrep(object):
         print path
         for f in listdir(path):
             if isfile(join(path, f)):
+                print 'start parsing dir,start date:{}, end_date:{}'.format(start_date,end_date)
                 self.parse_file(join(path, f),start_date,end_date,if_test)
 
     @staticmethod
