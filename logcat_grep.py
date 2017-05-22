@@ -191,19 +191,37 @@ class LogCatGrep(object):
         self.user_info = dict()
 
 
-    def parser_dir(self,path):
+    def parse_dir(self, path, start_date = FILE_TIME_START, end_date = FILE_TIME_END, if_test = False):
         print path
         for f in listdir(path):
             if isfile(join(path, f)):
-                self.parse_file(join(path, f))
+                self.parse_file(join(path, f),start_date,end_date,if_test)
+
+    @staticmethod
+    def parse_log_server(start_date = FILE_TIME_START, end_date = FILE_TIME_END,if_test = False):
+        dir_list = ["/usr/local/seven/usa-ap01/logs/flume/", "/usr/local/seven/usa-ap02/logs/flume/"]
+        for dir in dir_list:
+            if os.path.exists(dir):
+                print 'start parsing dir:{}'.format(dir)
+                LogCatGrep().parse_dir(dir,start_date,end_date,if_test)
+                break
+
+    @staticmethod
+    def parse_today(if_test = False):
+        now = arrow.utcnow()
+        yesterday = now.replace(days=-1)
+
+        LogCatGrep.parse_log_server(yesterday.format('YYYY-MM-DD'),
+                                    now.format('YYYY-MM-DD'),
+                                    if_test)
 
 
 
 
-    def parse_file(self,aggregated_log_file,if_test = False):
+    def parse_file(self,aggregated_log_file,start_date = FILE_TIME_START,end_date = FILE_TIME_END,if_test = False):
         last_modified_time = arrow.get(os.path.getmtime(aggregated_log_file)).format('YYYY-MM-DD')
         print 'start parsing file {}, last modified time {}'.format(aggregated_log_file,last_modified_time)
-        if if_test == False and (last_modified_time < FILE_TIME_START or last_modified_time >= FILE_TIME_END):
+        if if_test == False and (last_modified_time < start_date or last_modified_time >= end_date):
             print 'skip the file'
             return
         find = False
@@ -306,5 +324,6 @@ class LogCatGrep(object):
 
         if find:
             send_email(aggregated_log_file,if_test,self)
+            self.user_info = dict()
 
 
