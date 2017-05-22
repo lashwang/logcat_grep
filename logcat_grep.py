@@ -304,7 +304,7 @@ class LogCatGrep(object):
                     try:
                         payload_data = zlib.decompress(payload.getvalue(), zlib.MAX_WBITS | 16)
                         is_beta = False
-                        for line in payload_data.split("\n"):
+                        for line in payload_data.split("\n")[0:100]:
                             if '[Native]' in line and '[D]' in line:
                                 is_beta = True
                                 break
