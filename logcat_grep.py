@@ -171,7 +171,7 @@ class LogCatGrep(object):
     def __init__(self):
         self.on_file_readed = on_file_readed
         on_parse_started()
-
+        self.skip_user_list = set()
 
     def parser_dir(self,path):
         print path
@@ -232,10 +232,15 @@ class LogCatGrep(object):
                     break
                 block_index += 1
                 log_tpype_info = LOGS_TYPES.get(pck_log_type)
-                if log_tpype_info is None:
-                    print ("pck_log_type %d is NOT supported" % pck_log_type)
+                if pck_log_type != 0:
+                    #print ("pck_log_type %d is NOT supported" % pck_log_type)
                     binaryFile.seek(pckPayloadSize, 1)
                     continue
+
+                if pckuserId in self.skip_user_list:
+                    binaryFile.seek(pckPayloadSize, 1)
+                    continue
+
                 bytesNeedsToWrite = pckPayloadSize
                 payload = BytesIO()
                 try:
@@ -245,9 +250,15 @@ class LogCatGrep(object):
                         blockBody = binaryFile.read(curLen)  # 5M  per writing
                         payload.write(blockBody)
                         bytesNeedsToWrite = bytesNeedsToWrite - curLen
+                    # end while
+
 
                     try:
                         payload_data = zlib.decompress(payload.getvalue(), zlib.MAX_WBITS | 16)
+                        if '[D]' not in payload_data:
+                            print 'user {} is not in beta,skip this user'.format(pckuserId)
+                            self.skip_user_list.add(pckuserId)
+                            continue
                         find0 = self.on_file_readed(StringIO.StringIO(payload_data),
                                             pckuserId,
                                             arrow.get(pck_start_time).format('YYYY-MM-DD-HH:mm'))
@@ -255,12 +266,15 @@ class LogCatGrep(object):
                     except Exception,error:
                         print error
 
-                    #print pckuserId,arrow.get(pck_start_time).format('YYYY-MM-DD HH:mm')
                 finally:
                     payload.close()
-        #
+            # end while
+
         finally:
             binaryFile.close()
+        # end try:
+
+
         if find:
             send_email(aggregated_log_file,if_test)
 
