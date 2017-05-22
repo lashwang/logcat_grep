@@ -122,15 +122,17 @@ def on_parse_started():
 
 def on_file_readed(io,pckuserId,date):
     find = False
+    find_number = 0
     alllines = io.readlines()
-    filename = '{}/output.txt'.format(OUTPUT_DIR)
-    f = open(filename, 'a')
+    filename = '{}/{}.log'.format(OUTPUT_DIR,pckuserId)
+
     skip_lines = 0
     for line_number, line in enumerate(alllines):
         if skip_lines > 0:
             skip_lines = skip_lines - 1
             continue
         if KEY_WORD in line:
+            f = open(filename, 'a')
             find = True
             f.write("[crash find for user, dump logs]{}\n".format(pckuserId))
             start = line_number-LOGCAT_BEFORE_LINE
@@ -138,32 +140,46 @@ def on_file_readed(io,pckuserId,date):
             if start < 0:
                 start = 0
             f.write("".join(alllines[start:end]))
+            f.close()
             skip_lines = LOGCAT_AFTER_LINE
+            find_number = find_number + 1
 
 
-    f.close()
 
-    return find
+    return find_number
 
-def send_email(grep_filename,if_test):
+def send_email(grep_filename,if_test,grep_info):
     # zip the output file
-    file = 'output/output.txt'
+    path = 'output'
     zip_file = 'output/output.zip'
-    with ZipFile(zip_file, 'w') as myzip:
-        myzip.write(file)
+    for f in listdir(path):
+        if isfile(join(path, f)):
+            f = os.path.join(path, f)
+            with ZipFile(zip_file, 'w') as myzip:
+                myzip.write(f)
+
+    subject = 'Logcat Grep Result From {} to {}'.format(FILE_TIME_START, FILE_TIME_END)
+    content = 'Logcat Grep Result from {} to {} for key:{}'.format(FILE_TIME_START, FILE_TIME_END, KEY_WORD)
+
+    summery = "\n"
+
+    for k in grep_info.user_info.keys():
+        summery += "{}:{}\n".format(k,grep_info.user_info[k])
+
+    content += summery
+
+
     email = Email()
     if if_test:
         email.send(RECIPIENTS_TEST,
-                   'Logcat Grep Result From {} to {}'.format(FILE_TIME_START, FILE_TIME_END),
-                   'Logcat Grep Result from {} to {} for key:{}'.format(FILE_TIME_START, FILE_TIME_END, KEY_WORD),
+                   subject,
+                   content,
                    [zip_file])
     else:
         email.send(RECIPIENTS,
-                   'Logcat Grep Result From {} to {}'.format(FILE_TIME_START, FILE_TIME_END),
-                   'Logcat Grep Result from {} to {} for key:{}'.format(FILE_TIME_START, FILE_TIME_END, KEY_WORD),
+                   subject,
+                   content,
                    [zip_file])
-
-    os.remove(file)
 
 
 
@@ -172,6 +188,8 @@ class LogCatGrep(object):
         self.on_file_readed = on_file_readed
         on_parse_started()
         self.skip_user_list = set()
+        self.user_info = dict()
+
 
     def parser_dir(self,path):
         print path
@@ -241,6 +259,11 @@ class LogCatGrep(object):
                     binaryFile.seek(pckPayloadSize, 1)
                     continue
 
+                if pckuserId in self.user_info.keys() and self.user_info[pckuserId] >= 20:
+                    print 'user {} crash number over 20. skip'.format(pckuserId)
+                    binaryFile.seek(pckPayloadSize, 1)
+                    continue
+
                 bytesNeedsToWrite = pckPayloadSize
                 payload = BytesIO()
                 try:
@@ -259,10 +282,16 @@ class LogCatGrep(object):
                             print 'user {} is not in beta,skip this user'.format(pckuserId)
                             self.skip_user_list.add(pckuserId)
                             continue
-                        find0 = self.on_file_readed(StringIO.StringIO(payload_data),
+                        find_number = self.on_file_readed(StringIO.StringIO(payload_data),
                                             pckuserId,
                                             arrow.get(pck_start_time).format('YYYY-MM-DD-HH:mm'))
-                        find = (find or find0)
+                        find = (find or find_number >= 1)
+
+                        if find_number >= 1:
+                            if pckuserId in self.user_info.keys():
+                                self.user_info[pckuserId] = self.user_info[pckuserId] + find_number
+                            else:
+                                self.user_info[pckuserId] = find_number
                     except Exception,error:
                         print error
 
@@ -276,6 +305,6 @@ class LogCatGrep(object):
 
 
         if find:
-            send_email(aggregated_log_file,if_test)
+            send_email(aggregated_log_file,if_test,self)
 
 
