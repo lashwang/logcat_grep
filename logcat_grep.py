@@ -192,11 +192,10 @@ class LogCatGrep(object):
 
 
     def parse_dir(self, path, start_date = FILE_TIME_START, end_date = FILE_TIME_END, if_test = False):
-        print path
+        print 'start parsing dir,start date:{}, end_date:{}'.format(start_date, end_date)
         for f in listdir(path):
             if isfile(join(path, f)):
-                print 'start parsing dir,start date:{}, end_date:{}'.format(start_date,end_date)
-                self.parse_file(join(path, f),start_date,end_date,if_test)
+                self.parse_file_by_date(join(path, f),start_date,end_date,if_test)
 
     @staticmethod
     def parse_log_server(start_date = FILE_TIME_START, end_date = FILE_TIME_END,if_test = False):
@@ -218,13 +217,15 @@ class LogCatGrep(object):
 
 
 
-
-    def parse_file(self,aggregated_log_file,start_date = FILE_TIME_START,end_date = FILE_TIME_END,if_test = False):
+    def parse_file_by_date(self,aggregated_log_file,start_date = FILE_TIME_START,end_date = FILE_TIME_END,if_test=False):
         last_modified_time = arrow.get(os.path.getmtime(aggregated_log_file)).format('YYYY-MM-DD')
         print 'start parsing file {}, last modified time {}'.format(aggregated_log_file,last_modified_time)
-        if if_test == False and (last_modified_time < start_date or last_modified_time >= end_date):
+        if (last_modified_time < start_date or last_modified_time >= end_date):
             print 'skip the file'
             return
+        self.parse_file(aggregated_log_file,if_test)
+
+    def parse_file(self,aggregated_log_file,if_test=False):
         find = False
         binaryFile = open(aggregated_log_file, 'rb')
         try:

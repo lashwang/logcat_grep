@@ -13,7 +13,7 @@ class MyTestCase(unittest2.TestCase):
 
     @unittest2.skip("skip")
     def test_something(self):
-        LogCatGrep().parse_file('test.bin',if_test = True)
+        LogCatGrep().parse_file('test.bin',if_test=True)
 
     def test_parse_dir(self):
         LogCatGrep.parse_today(True)
