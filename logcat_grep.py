@@ -300,7 +300,13 @@ class LogCatGrep(object):
 
                     try:
                         payload_data = zlib.decompress(payload.getvalue(), zlib.MAX_WBITS | 16)
-                        if '[Native]' in payload_data and '[D]' not in payload_data:
+                        is_beta = False
+                        for line in payload_data.split("\n"):
+                            if '[Native]' in line and '[D]' in line:
+                                is_beta = True
+                                break
+
+                        if not is_beta:
                             #print 'user {} is not in beta,skip this user'.format(pckuserId)
                             self.skip_user_list.add(pckuserId)
                             continue
