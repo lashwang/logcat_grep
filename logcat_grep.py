@@ -299,7 +299,7 @@ class LogCatGrep(object):
                     try:
                         payload_data = zlib.decompress(payload.getvalue(), zlib.MAX_WBITS | 16)
                         if '[D]' not in payload_data:
-                            print 'user {} is not in beta,skip this user'.format(pckuserId)
+                            #print 'user {} is not in beta,skip this user'.format(pckuserId)
                             self.skip_user_list.add(pckuserId)
                             continue
                         find_number = self.on_file_readed(StringIO.StringIO(payload_data),
