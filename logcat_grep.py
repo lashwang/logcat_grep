@@ -325,6 +325,7 @@ class LogCatGrep(object):
 
 
         if find:
+            print 'find crash for file {}'.format(aggregated_log_file)
             send_email(aggregated_log_file,if_test,self)
             self.user_info = dict()
 
