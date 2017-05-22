@@ -152,11 +152,13 @@ def send_email(grep_filename,if_test,grep_info):
     # zip the output file
     path = 'output'
     zip_file = 'output/output.zip'
+    myzip = ZipFile(zip_file, 'w')
     for f in listdir(path):
         if isfile(join(path, f)):
             f = os.path.join(path, f)
-            with ZipFile(zip_file, 'w') as myzip:
-                myzip.write(f)
+            myzip.write(f)
+
+    myzip.close()
 
     subject = 'Logcat Grep Result From {} to {}'.format(FILE_TIME_START, FILE_TIME_END)
     content = 'Logcat Grep Result from {} to {} for key:{}'.format(FILE_TIME_START, FILE_TIME_END, KEY_WORD)
