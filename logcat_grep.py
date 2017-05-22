@@ -160,8 +160,8 @@ def send_email(grep_filename,if_test,grep_info):
 
     myzip.close()
 
-    subject = 'Logcat Grep Result From {} to {}'.format(FILE_TIME_START, FILE_TIME_END)
-    content = 'Logcat Grep Result from {} to {} for key:{}'.format(FILE_TIME_START, FILE_TIME_END, KEY_WORD)
+    subject = 'Logcat Grep Result'
+    content = 'Logcat Grep Result key:{}\n'.format(KEY_WORD)
 
     summery = "\n"
 
@@ -221,10 +221,10 @@ class LogCatGrep(object):
 
     def parse_file_by_date(self,aggregated_log_file,start_date = FILE_TIME_START,end_date = FILE_TIME_END,if_test=False):
         last_modified_time = arrow.get(os.path.getmtime(aggregated_log_file)).format('YYYY-MM-DD')
-        print 'start parsing file {}, last modified time {}'.format(aggregated_log_file,last_modified_time)
         if (last_modified_time < start_date or last_modified_time >= end_date):
-            print 'skip the file'
+            print 'skip file {}'.format(aggregated_log_file)
             return
+        print 'start parsing file {}, last modified time {}'.format(aggregated_log_file, last_modified_time)
         self.parse_file(aggregated_log_file,if_test)
 
     def parse_file(self,aggregated_log_file,if_test=False):
@@ -330,5 +330,6 @@ class LogCatGrep(object):
             print 'find crash for file {}'.format(aggregated_log_file)
             send_email(aggregated_log_file,if_test,self)
             self.user_info = dict()
+            on_parse_started()
 
 
