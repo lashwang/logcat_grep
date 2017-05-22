@@ -161,7 +161,7 @@ def send_email(grep_filename,if_test,grep_info):
     myzip.close()
 
     subject = 'Logcat Grep Result'
-    content = 'Logcat Grep Result key:{}\n'.format(KEY_WORD)
+    content = 'Logcat Grep Result in file {} for key:{}\n'.format(grep_filename,KEY_WORD)
 
     summery = "\n"
 
