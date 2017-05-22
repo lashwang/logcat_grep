@@ -12,7 +12,7 @@ from logcat_grep import *
 class MyTestCase(unittest2.TestCase):
 
     def test_something(self):
-        LogCatGrep().parse_file('test.bin')
+        LogCatGrep().parse_file('test.bin',if_test = True)
 
     @unittest2.skip('skip')
     def test_parse_dir(self):

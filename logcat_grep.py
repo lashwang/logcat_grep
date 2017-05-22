@@ -27,9 +27,13 @@ from itertools import islice
 
 OUTPUT_DIR = 'output'
 
-RECIPIENTS = ['swang@seven.com','wli@seven.com','ahu@seven.com','kyang@seven.com','fluo@seven.com','jwang@seven.com']
+RECIPIENTS = ['swang@seven.com','wli@seven.com','ahu@seven.com','kyang@seven.com','fluo@seven.com']
+RECIPIENTS_TEST = ['swang@seven.com']
 
-KEY_WORD = "crash_handler.c"
+
+
+
+KEY_WORD = "sig_handler signal: 11"
 KEY_WORD_REMOVE = "sig_init"
 
 LOGCAT_BEFORE_LINE = 100
@@ -37,8 +41,8 @@ LOGCAT_AFTER_LINE = 10
 
 
 
-FILE_TIME_AFTER = '2017-05-05'
-FILE_TIME_BEFORE = '2017-05-06'
+FILE_TIME_START = '2017-05-05'
+FILE_TIME_END = '2017-05-06'
 
 
 DATETIME_FORMAT_DEFAULT = "%Y-%m-%d %H:%M:%S"
@@ -126,7 +130,7 @@ def on_file_readed(io,pckuserId,date):
         if skip_lines > 0:
             skip_lines = skip_lines - 1
             continue
-        if KEY_WORD in line and KEY_WORD_REMOVE not in line:
+        if KEY_WORD in line:
             find = True
             f.write("[crash find for user, dump logs]{}\n".format(pckuserId))
             start = line_number-LOGCAT_BEFORE_LINE
@@ -141,17 +145,24 @@ def on_file_readed(io,pckuserId,date):
 
     return find
 
-def send_email(grep_filename):
+def send_email(grep_filename,if_test):
     # zip the output file
     file = 'output/output.txt'
     zip_file = 'output/output.zip'
     with ZipFile(zip_file, 'w') as myzip:
         myzip.write(file)
     email = Email()
-    email.send(RECIPIENTS,
-               'Logcat Grep Result From {} to {}'.format(FILE_TIME_AFTER,FILE_TIME_BEFORE),
-               'Logcat Grep Result from {} to {} for key:{}'.format(FILE_TIME_AFTER,FILE_TIME_BEFORE,KEY_WORD),
-               [zip_file])
+    if if_test:
+        email.send(RECIPIENTS_TEST,
+                   'Logcat Grep Result From {} to {}'.format(FILE_TIME_START, FILE_TIME_END),
+                   'Logcat Grep Result from {} to {} for key:{}'.format(FILE_TIME_START, FILE_TIME_END, KEY_WORD),
+                   [zip_file])
+    else:
+        email.send(RECIPIENTS,
+                   'Logcat Grep Result From {} to {}'.format(FILE_TIME_START, FILE_TIME_END),
+                   'Logcat Grep Result from {} to {} for key:{}'.format(FILE_TIME_START, FILE_TIME_END, KEY_WORD),
+                   [zip_file])
+
     os.remove(file)
 
 
@@ -171,10 +182,10 @@ class LogCatGrep(object):
 
 
 
-    def parse_file(self,aggregated_log_file):
+    def parse_file(self,aggregated_log_file,if_test = False):
         last_modified_time = arrow.get(os.path.getmtime(aggregated_log_file)).format('YYYY-MM-DD')
         print 'start parsing file {}, last modified time {}'.format(aggregated_log_file,last_modified_time)
-        if last_modified_time < FILE_TIME_AFTER or last_modified_time > FILE_TIME_BEFORE:
+        if if_test == False and (last_modified_time < FILE_TIME_START or last_modified_time >= FILE_TIME_END):
             print 'skip the file'
             return
         find = False
@@ -251,6 +262,6 @@ class LogCatGrep(object):
         finally:
             binaryFile.close()
         if find:
-            send_email(aggregated_log_file)
+            send_email(aggregated_log_file,if_test)
 
 
