@@ -125,22 +125,25 @@ def on_file_readed(io,pckuserId,date):
     find_number = 0
     alllines = io.readlines()
     filename = '{}/{}.log'.format(OUTPUT_DIR,pckuserId)
-
+    all_filename = '{}/{}.log'.format(OUTPUT_DIR,'all')
     skip_lines = 0
     for line_number, line in enumerate(alllines):
         if skip_lines > 0:
             skip_lines = skip_lines - 1
             continue
         if KEY_WORD in line:
-            f = open(filename, 'a')
+            #f = open(filename, 'a')
+            f_all = open(all_filename,'a')
             find = True
-            f.write("[crash find for user, dump logs]{}\n".format(pckuserId))
+            f_all.write("[crash find for user, dump logs]{}\n".format(pckuserId))
             start = line_number-LOGCAT_BEFORE_LINE
             end = line_number+LOGCAT_AFTER_LINE
             if start < 0:
                 start = 0
-            f.write("".join(alllines[start:end]))
-            f.close()
+            #f.write("".join(alllines[start:end]))
+            f_all.write("".join(alllines[start:end]))
+            #f.close()
+            f_all.close()
             skip_lines = LOGCAT_AFTER_LINE
             find_number = find_number + 1
 
