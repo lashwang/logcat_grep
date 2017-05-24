@@ -310,9 +310,12 @@ class LogCatGrep(object):
                                 break
 
                         if not is_beta:
-                            #print 'user {} is not in beta,skip this user'.format(pckuserId)
                             self.skip_user_list.add(pckuserId)
                             continue
+
+                        if 'oc_backtrace.cpp' not in payload_data:
+                            continue
+
                         find_number = self.on_file_readed(StringIO.StringIO(payload_data),
                                             pckuserId,
                                             arrow.get(pck_start_time).format('YYYY-MM-DD-HH:mm'))
