@@ -37,7 +37,7 @@ KEY_WORD = "sig_handler signal: 11"
 KEY_WORD_REMOVE = "sig_init"
 
 LOGCAT_BEFORE_LINE = 100
-LOGCAT_AFTER_LINE = 10
+LOGCAT_AFTER_LINE = 20
 
 
 
