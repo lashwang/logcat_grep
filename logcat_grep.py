@@ -27,7 +27,7 @@ from itertools import islice
 
 OUTPUT_DIR = 'output'
 
-RECIPIENTS = ['swang@seven.com','wli@seven.com','ahu@seven.com','kyang@seven.com','fluo@seven.com']
+RECIPIENTS = ['swang@seven.com','wli@seven.com','ahu@seven.com','kyang@seven.com','fluo@seven.com','jinwang@seven.com']
 RECIPIENTS_TEST = ['swang@seven.com']
 
 
