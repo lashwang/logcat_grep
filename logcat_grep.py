@@ -154,7 +154,9 @@ def on_file_readed(io,pckuserId,date):
 def send_email(grep_filename,if_test,grep_info):
     # zip the output file
     path = 'output'
-    zip_file = 'output/output.zip'
+    now = arrow.now()
+    zip_file = 'output/output_{}.zip'.format(now.format('MM_DD_HH_mm_ss'))
+
     myzip = ZipFile(zip_file, 'w')
     for f in listdir(path):
         if isfile(join(path, f)) and os.path.splitext(f)[1] == '.log':
