@@ -120,83 +120,89 @@ def on_parse_started():
         print error
 
 
-def on_file_readed(io,pckuserId,date):
-    find = False
-    find_number = 0
-    alllines = io.readlines()
-    filename = '{}/{}.log'.format(OUTPUT_DIR,pckuserId)
-    all_filename = '{}/{}.log'.format(OUTPUT_DIR,'all')
-    skip_lines = 0
-    for line_number, line in enumerate(alllines):
-        if skip_lines > 0:
-            skip_lines = skip_lines - 1
-            continue
-        if KEY_WORD in line:
-            #f = open(filename, 'a')
-            f_all = open(all_filename,'a')
-            find = True
-            f_all.write("[crash find for user, dump logs]{}\n".format(pckuserId))
-            start = line_number-LOGCAT_BEFORE_LINE
-            end = line_number+LOGCAT_AFTER_LINE
-            if start < 0:
-                start = 0
-            #f.write("".join(alllines[start:end]))
-            f_all.write("".join(alllines[start:end]))
-            #f.close()
-            f_all.close()
-            skip_lines = LOGCAT_AFTER_LINE
-            find_number = find_number + 1
-
-
-
-    return find_number
-
-def send_email(grep_filename,if_test,grep_info):
-    # zip the output file
-    path = 'output'
-    now = arrow.now()
-    zip_file = 'output/output_{}.zip'.format(now.format('MM_DD_HH_mm_ss'))
-
-    myzip = ZipFile(zip_file, 'w')
-    for f in listdir(path):
-        if isfile(join(path, f)) and os.path.splitext(f)[1] == '.log':
-            f = os.path.join(path, f)
-            myzip.write(f)
-
-    myzip.close()
-
-    subject = 'Logcat Grep Result'
-    content = 'Logcat Grep Result in file {} for key:{}\n'.format(grep_filename,KEY_WORD)
-
-    summery = "\n"
-
-    for k in grep_info.user_info.keys():
-        summery += "{}:{}\n".format(k,grep_info.user_info[k])
-
-    content += summery
-
-
-    email = Email()
-    if if_test:
-        email.send(RECIPIENTS_TEST,
-                   subject,
-                   content,
-                   [zip_file])
-    else:
-        email.send(RECIPIENTS,
-                   subject,
-                   content,
-                   [zip_file])
-
-
 
 class LogCatGrep(object):
     def __init__(self):
-        self.on_file_readed = on_file_readed
         on_parse_started()
         self.skip_user_list = set()
         self.user_info = dict()
+        self.back_trace_line = list()
 
+    def send_email(self,grep_filename, if_test, grep_info):
+        # zip the output file
+        path = 'output'
+        now = arrow.now()
+        zip_file = 'output/output_{}.zip'.format(now.format('MM_DD_HH_mm_ss'))
+
+        myzip = ZipFile(zip_file, 'w')
+        for f in listdir(path):
+            if isfile(join(path, f)) and os.path.splitext(f)[1] == '.log':
+                f = os.path.join(path, f)
+                myzip.write(f)
+
+        myzip.close()
+
+        subject = 'Logcat Grep Result'
+        content = 'Logcat Grep Result in file {} for key:{}\n'.format(grep_filename, KEY_WORD)
+
+
+
+        summery = "\n"
+
+        for k in grep_info.user_info.keys():
+            summery += "{}:{}\n".format(k, grep_info.user_info[k])
+
+        content += summery
+
+        back_trace = '\n\n\n\n\n\nBacktrace logs:\n'
+        back_trace += ''.join(self.back_trace_line)
+        content += back_trace
+
+        email = Email()
+        if if_test:
+            email.send(RECIPIENTS_TEST,
+                       subject,
+                       content,
+                       [zip_file])
+        else:
+            email.send(RECIPIENTS,
+                       subject,
+                       content,
+                       [zip_file])
+
+    def on_file_readed(self,io, pckuserId, date):
+        find = False
+        find_number = 0
+        alllines = io.readlines()
+        filename = '{}/{}.log'.format(OUTPUT_DIR, pckuserId)
+        all_filename = '{}/{}.log'.format(OUTPUT_DIR, 'all')
+        skip_lines = 0
+        for line_number, line in enumerate(alllines):
+            if 'oc_backtrace.cpp' in line:
+                self.back_trace_line.append(line)
+
+            if skip_lines > 0:
+                skip_lines = skip_lines - 1
+                continue
+            if KEY_WORD in line:
+                # f = open(filename, 'a')
+                f_all = open(all_filename, 'a')
+                find = True
+                f_all.write("[crash find for user, dump logs]{}\n".format(pckuserId))
+                start = line_number - LOGCAT_BEFORE_LINE
+                end = line_number + LOGCAT_AFTER_LINE
+                if start < 0:
+                    start = 0
+                # f.write("".join(alllines[start:end]))
+                f_all.write("".join(alllines[start:end]))
+                # f.close()
+                f_all.close()
+                skip_lines = LOGCAT_AFTER_LINE
+                find_number = find_number + 1
+
+
+
+        return find_number
 
     def parse_dir(self, path, start_date = FILE_TIME_START, end_date = FILE_TIME_END, if_test = False):
         print 'start parsing dir,start date:{}, end_date:{}'.format(start_date, end_date)
