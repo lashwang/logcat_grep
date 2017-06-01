@@ -22,7 +22,7 @@ from email.utils import formatdate
 from zipfile import ZipFile
 from Email import Email
 from itertools import islice
-
+import time
 
 
 OUTPUT_DIR = 'output'
@@ -349,6 +349,7 @@ class LogCatGrep(object):
         if find:
             print 'find crash for file {}'.format(aggregated_log_file)
             self.send_email(aggregated_log_file,if_test,self)
+            time.sleep(1)
             self.user_info = dict()
             self.back_trace_line = list()
             on_parse_started()
