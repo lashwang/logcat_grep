@@ -37,7 +37,7 @@ KEY_WORD = "sig_handler signal: 11"
 KEY_WORD_REMOVE = "sig_init"
 
 LOGCAT_BEFORE_LINE = 100
-LOGCAT_AFTER_LINE = 20
+LOGCAT_AFTER_LINE = 50
 
 
 
@@ -349,7 +349,7 @@ class LogCatGrep(object):
         if find:
             print 'find crash for file {}'.format(aggregated_log_file)
             self.send_email(aggregated_log_file,if_test,self)
-            time.sleep(1)
+            #time.sleep(1)
             self.user_info = dict()
             self.back_trace_line = list()
             on_parse_started()
