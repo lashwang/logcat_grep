@@ -33,7 +33,7 @@ RECIPIENTS_TEST = ['swang@seven.com']
 
 
 
-KEY_WORD = "sig_handler signal: 11"
+KEY_WORD = "sig_handler signal: "
 KEY_WORD_REMOVE = "sig_init"
 
 LOGCAT_BEFORE_LINE = 100
