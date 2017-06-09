@@ -188,7 +188,7 @@ class LogCatGrep(object):
                 # f = open(filename, 'a')
                 f_all = open(all_filename, 'a')
                 find = True
-                f_all.write("[crash find for user, dump logs]{}\n\n".format(pckuserId))
+                f_all.write("[crash find for user, dump logs]{}\n====================================\n".format(pckuserId))
                 start = line_number - LOGCAT_BEFORE_LINE
                 end = line_number + LOGCAT_AFTER_LINE
                 if start < 0:
