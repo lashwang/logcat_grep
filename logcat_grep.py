@@ -186,7 +186,8 @@ class LogCatGrep(object):
                 continue
             if KEY_WORD in line:
                 # f = open(filename, 'a')
-                self.back_trace_line.append('\n\n==============\n\n')
+                self.back_trace_line.append('\n\n\n\n')
+                self.back_trace_line.append("user id:{}\n".format(pckuserId))
                 f_all = open(all_filename, 'a')
                 find = True
                 f_all.write("[crash find for user, dump logs]{}\n====================================\n".format(pckuserId))
@@ -196,7 +197,7 @@ class LogCatGrep(object):
                     start = 0
                 # f.write("".join(alllines[start:end]))
                 f_all.write("".join(alllines[start:line_number]))
-                f_all.write("[crash find for user, dump logs]{}\n".format(pckuserId))
+                f_all.write("\nuser id:{}\n".format(pckuserId))
                 f_all.write("".join(alllines[line_number:end]))
 
                 # f.close()
