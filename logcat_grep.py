@@ -112,28 +112,30 @@ def toClientAddrHash(bytesArr):
         return pckuserId[0:i]
 
 
-def on_parse_started():
-    shutil.rmtree(OUTPUT_DIR,ignore_errors=True)
-
-    try:
-        os.mkdir(OUTPUT_DIR)
-    except Exception,error:
-        print error
-
 
 
 class LogCatGrep(object):
     def __init__(self):
-        on_parse_started()
+        self.on_parse_started()
         self.skip_user_list = set()
         self.user_info = dict()
         self.back_trace_line = list()
+
+    def on_parse_started(self):
+        shutil.rmtree(OUTPUT_DIR, ignore_errors=True)
+
+        try:
+            os.mkdir(OUTPUT_DIR)
+        except Exception, error:
+            print error
+
+        self.time_str = arrow.now().format('MM_DD_HH_mm_ss')
 
     def send_email(self,grep_filename, if_test, grep_info):
         # zip the output file
         path = 'output'
         now = arrow.now()
-        zip_file = 'output/output_{}.zip'.format(now.format('MM_DD_HH_mm_ss'))
+        zip_file = 'output/output_{}.zip'.format(self.time_str)
 
         myzip = ZipFile(zip_file, 'w')
         for f in listdir(path):
@@ -176,7 +178,7 @@ class LogCatGrep(object):
         find_number = 0
         alllines = io.readlines()
         filename = '{}/{}.log'.format(OUTPUT_DIR, pckuserId)
-        all_filename = '{}/{}.log'.format(OUTPUT_DIR, 'all')
+        all_filename = '{}/{}.log'.format(OUTPUT_DIR, self.time_str)
         skip_lines = 0
         for line_number, line in enumerate(alllines):
             if 'oc_backtrace.cpp' in line:
@@ -360,6 +362,6 @@ class LogCatGrep(object):
             #time.sleep(1)
             self.user_info = dict()
             self.back_trace_line = list()
-            on_parse_started()
+            self.on_parse_started()
 
 

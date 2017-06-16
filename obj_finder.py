@@ -38,7 +38,10 @@ class ObjFinder(object):
             url = item.find(class_="tip model-link inside").attrs['href']
             url = self.__class__.URL_BASE + url
             build_number = url.split('/')[-2]
-            version_code = self.parse_version_code(url)
+            try:
+                version_code = self.parse_version_code(url)
+            except Exception:
+                continue
             print build_number,version_code
 
 
