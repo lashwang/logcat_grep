@@ -145,8 +145,8 @@ class LogCatGrep(object):
 
         myzip.close()
 
-        subject = 'Logcat Grep Result'
-        content = 'Logcat Grep Result in file {} for key:{}\n'.format(grep_filename, KEY_WORD)
+        subject = 'Logcat Crash Report'
+        content = 'Logcat Crash Report in file {} for key:{}\n'.format(grep_filename, KEY_WORD)
 
 
 
