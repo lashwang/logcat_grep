@@ -193,6 +193,7 @@ class LogCatGrep(object):
                 # f = open(filename, 'a')
                 self.back_trace_line.append('\n\n')
                 self.back_trace_line.append("[UserID]:{}\n".format(pckuserId))
+                self.back_trace_line.append(line)
                 f_all = open(all_filename, 'a')
                 find = True
                 f_all.write("[crash find for user, dump logs]{}\n====================================\n".format(pckuserId))
