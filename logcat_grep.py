@@ -27,7 +27,9 @@ import time
 
 OUTPUT_DIR = 'output'
 
-RECIPIENTS = ['adclear-android-china@seven.com','dmorgan@seven.com','sglazova@seven.com','cadams@seven.com']
+RECIPIENTS = ['swang@seven.com','ahu@seven.com','fluo@seven.com','cwang@seven.com','jinwang@seven.com',
+              'kyang@seven.com','tshen@seven.com','wli@seven.com',
+              'dmorgan@seven.com','sglazova@seven.com','cadams@seven.com']
 RECIPIENTS_TEST = ['swang@seven.com']
 
 
