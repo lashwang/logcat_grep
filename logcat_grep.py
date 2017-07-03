@@ -126,7 +126,7 @@ class LogCatGrep(object):
         self.on_parse_started()
         self.skip_user_list = set()
         self.user_info = dict()
-
+        self.back_trace_line = list()
 
     def on_parse_started(self):
         shutil.rmtree(OUTPUT_DIR, ignore_errors=True)
@@ -137,7 +137,6 @@ class LogCatGrep(object):
             print error
 
         self.time_str = arrow.now().format('MM_DD_HH_mm_ss')
-        self.back_trace_line = list()
         self.curr_version_code = 0
 
     def send_email(self,grep_filename, if_test, grep_info):
@@ -202,6 +201,13 @@ class LogCatGrep(object):
         all_filename = '{}/{}.log'.format(OUTPUT_DIR, self.time_str)
         skip_lines = 0
         for line_number, line in enumerate(alllines):
+
+            if 'oc_backtrace.cpp' in line:
+                if self.find_useful_crash():
+                    self.back_trace_line.append(line)
+                    if not "\n" in line:
+                        self.back_trace_line.append('\n')
+
             if skip_lines > 0:
                 skip_lines = skip_lines - 1
                 continue
@@ -233,14 +239,8 @@ class LogCatGrep(object):
                     find_number = find_number + 1
                 continue
 
-            if 'oc_backtrace.cpp' in line:
-                if self.find_useful_crash():
-                    self.back_trace_line.append(line)
-                    if not "\n" in line:
-                        self.back_trace_line.append('\n')
 
-
-            # if KEY_WORD in line:
+                            # if KEY_WORD in line:
             #     # f = open(filename, 'a')
             #     self.back_trace_line.append('\n\n')
             #     self.back_trace_line.append("[UserID]:{}\n".format(pckuserId))
