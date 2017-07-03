@@ -124,8 +124,7 @@ class LogCatGrep(object):
         self.on_parse_started()
         self.skip_user_list = set()
         self.user_info = dict()
-        self.back_trace_line = list()
-        self.curr_version_code = 0
+
 
     def on_parse_started(self):
         shutil.rmtree(OUTPUT_DIR, ignore_errors=True)
@@ -136,6 +135,8 @@ class LogCatGrep(object):
             print error
 
         self.time_str = arrow.now().format('MM_DD_HH_mm_ss')
+        self.back_trace_line = list()
+        self.curr_version_code = 0
 
     def send_email(self,grep_filename, if_test, grep_info):
         # zip the output file
