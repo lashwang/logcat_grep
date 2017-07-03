@@ -36,6 +36,9 @@ RECIPIENTS_TEST = ['swang@seven.com']
 
 
 KEY_WORD = "sig_handler signal: "
+KEY_WORD_VERSION_CODE = "dumpping backtrace for client:"
+VERSION_CODE_BEGIN = 700505109
+
 #KEY_WORD = "send CTQD error"
 KEY_WORD_REMOVE = "sig_init"
 
@@ -122,6 +125,7 @@ class LogCatGrep(object):
         self.skip_user_list = set()
         self.user_info = dict()
         self.back_trace_line = list()
+        self.curr_version_code = 0
 
     def on_parse_started(self):
         shutil.rmtree(OUTPUT_DIR, ignore_errors=True)
@@ -175,6 +179,24 @@ class LogCatGrep(object):
                        content,
                        [zip_file])
 
+    def get_version_code(self,line):
+        if ":" not in line:
+            return 0
+        version_code = line.split(":")[1]
+        version_code = version_code.strip()
+
+        try:
+            version_code = int(version_code)
+        except Exception,e:
+            print e
+            return 0
+
+        return version_code
+
+    def find_useful_crash(self):
+        return self.curr_version_code >= KEY_WORD_VERSION_CODE
+
+
     def on_file_readed(self,io, pckuserId, date):
         find = False
         find_number = 0
@@ -183,35 +205,63 @@ class LogCatGrep(object):
         all_filename = '{}/{}.log'.format(OUTPUT_DIR, self.time_str)
         skip_lines = 0
         for line_number, line in enumerate(alllines):
-            if 'oc_backtrace.cpp' in line:
-                self.back_trace_line.append(line)
-                if not "\n" in line:
-                    self.back_trace_line.append('\n')
-
             if skip_lines > 0:
                 skip_lines = skip_lines - 1
                 continue
-            if KEY_WORD in line:
-                # f = open(filename, 'a')
-                self.back_trace_line.append('\n\n')
-                self.back_trace_line.append("[UserID]:{}\n".format(pckuserId))
-                self.back_trace_line.append(line)
-                f_all = open(all_filename, 'a')
-                find = True
-                f_all.write("[crash find for user, dump logs]{}\n====================================\n".format(pckuserId))
-                start = line_number - LOGCAT_BEFORE_LINE
-                end = line_number + LOGCAT_AFTER_LINE
-                if start < 0:
-                    start = 0
-                # f.write("".join(alllines[start:end]))
-                f_all.write("".join(alllines[start:line_number]))
-                f_all.write("\n[UserID]:{}\n".format(pckuserId))
-                f_all.write("".join(alllines[line_number:end]))
 
-                # f.close()
-                f_all.close()
-                skip_lines = LOGCAT_AFTER_LINE
-                find_number = find_number + 1
+            if KEY_WORD_VERSION_CODE in line:
+                self.curr_version_code = self.get_version_code(line)
+                if self.find_useful_crash():
+                    self.back_trace_line.append('\n\n')
+                    self.back_trace_line.append("[UserID]:{}\n".format(pckuserId))
+                    self.back_trace_line.append(line)
+                    f_all = open(all_filename, 'a')
+                    find = True
+                    f_all.write(
+                        "[crash find for user, dump logs]{}\n====================================\n".format(pckuserId))
+                    start = line_number - LOGCAT_BEFORE_LINE
+                    end = line_number + LOGCAT_AFTER_LINE
+                    if start < 0:
+                        start = 0
+                    # f.write("".join(alllines[start:end]))
+                    f_all.write("".join(alllines[start:line_number]))
+                    f_all.write("\n[UserID]:{}\n".format(pckuserId))
+                    f_all.write("".join(alllines[line_number:end]))
+
+                    # f.close()
+                    f_all.close()
+                    skip_lines = LOGCAT_AFTER_LINE
+                    find_number = find_number + 1
+
+
+            if 'oc_backtrace.cpp' in line:
+                if self.find_useful_crash():
+                    self.back_trace_line.append(line)
+                    if not "\n" in line:
+                        self.back_trace_line.append('\n')
+
+
+            # if KEY_WORD in line:
+            #     # f = open(filename, 'a')
+            #     self.back_trace_line.append('\n\n')
+            #     self.back_trace_line.append("[UserID]:{}\n".format(pckuserId))
+            #     self.back_trace_line.append(line)
+            #     f_all = open(all_filename, 'a')
+            #     find = True
+            #     f_all.write("[crash find for user, dump logs]{}\n====================================\n".format(pckuserId))
+            #     start = line_number - LOGCAT_BEFORE_LINE
+            #     end = line_number + LOGCAT_AFTER_LINE
+            #     if start < 0:
+            #         start = 0
+            #     # f.write("".join(alllines[start:end]))
+            #     f_all.write("".join(alllines[start:line_number]))
+            #     f_all.write("\n[UserID]:{}\n".format(pckuserId))
+            #     f_all.write("".join(alllines[line_number:end]))
+            #
+            #     # f.close()
+            #     f_all.close()
+            #     skip_lines = LOGCAT_AFTER_LINE
+            #     find_number = find_number + 1
 
 
 
