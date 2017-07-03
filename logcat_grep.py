@@ -181,6 +181,7 @@ class LogCatGrep(object):
                        [zip_file])
 
     def get_version_code(self,line):
+        print "get_version_code:" + str(line)
         if ":" not in line:
             return 0
         version_code = line.split(":")[1]
