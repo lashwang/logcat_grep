@@ -231,7 +231,7 @@ class LogCatGrep(object):
                     f_all.close()
                     skip_lines = LOGCAT_AFTER_LINE
                     find_number = find_number + 1
-
+                continue
 
             if 'oc_backtrace.cpp' in line:
                 if self.find_useful_crash():
@@ -374,17 +374,18 @@ class LogCatGrep(object):
                     try:
                         payload_data = zlib.decompress(payload.getvalue(), zlib.MAX_WBITS | 16)
                         is_beta = False
-                        for line in payload_data.split("\n")[0:100]:
-                            if '[Native]' in line and '[D]' in line:
-                                is_beta = True
-                                break
 
-                        if not is_beta:
-                            self.skip_user_list.add(pckuserId)
-                            continue
-
-                        if 'oc_backtrace.cpp' not in payload_data:
-                            continue
+                        # for line in payload_data.split("\n")[0:100]:
+                        #     if '[Native]' in line and '[D]' in line:
+                        #         is_beta = True
+                        #         break
+                        #
+                        # if not is_beta:
+                        #     self.skip_user_list.add(pckuserId)
+                        #     continue
+                        #
+                        # if 'oc_backtrace.cpp' not in payload_data:
+                        #     continue
 
                         find_number = self.on_file_readed(StringIO.StringIO(payload_data),
                                             pckuserId,
@@ -396,6 +397,8 @@ class LogCatGrep(object):
                                 self.user_info[pckuserId] = self.user_info[pckuserId] + find_number
                             else:
                                 self.user_info[pckuserId] = find_number
+
+                        self.curr_version_code = 0
                     except Exception,error:
                         print error
 
