@@ -216,7 +216,7 @@ class LogCatGrep(object):
                 self.curr_version_code = self.get_version_code(line)
                 #print "get version code :" + str(self.curr_version_code)
                 if self.find_useful_crash():
-                    print "find crash for version {} in user ()".format(str(self.curr_version_code),pckuserId)
+                    print "find crash for version {} in user {}".format(str(self.curr_version_code),pckuserId)
                     self.back_trace_line.append('\n\n')
                     self.back_trace_line.append("[UserID]:{}\n".format(pckuserId))
                     self.back_trace_line.append(line)
