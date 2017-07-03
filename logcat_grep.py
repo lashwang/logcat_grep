@@ -212,6 +212,7 @@ class LogCatGrep(object):
 
             if KEY_WORD_VERSION_CODE in line:
                 self.curr_version_code = self.get_version_code(line)
+                print "get version code :" + str(self.curr_version_code)
                 if self.find_useful_crash():
                     self.back_trace_line.append('\n\n')
                     self.back_trace_line.append("[UserID]:{}\n".format(pckuserId))
