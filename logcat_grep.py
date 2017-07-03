@@ -23,6 +23,8 @@ from zipfile import ZipFile
 from Email import Email
 from itertools import islice
 import time
+import re
+
 
 
 OUTPUT_DIR = 'output'
@@ -181,19 +183,12 @@ class LogCatGrep(object):
                        [zip_file])
 
     def get_version_code(self,line):
-        print "get_version_code:" + str(line)
-        if ":" not in line:
-            return 0
-        version_code = line.split(":")[1]
-        version_code = version_code.strip()
+        result = re.match("(.+)dumpping backtrace for client:(\d+)", line)
+        if result:
+            return int(result.group(2))
 
-        try:
-            version_code = int(version_code)
-        except Exception,e:
-            print e
-            return 0
+        return 0
 
-        return version_code
 
     def find_useful_crash(self):
         return self.curr_version_code >= KEY_WORD_VERSION_CODE

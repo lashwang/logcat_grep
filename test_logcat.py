@@ -17,8 +17,10 @@ class MyTestCase(unittest2.TestCase):
     def test_parse_dir(self):
         LogCatGrep.parse_today(True)
 
-
-
+    def test_version_code(self):
+        line = "06-27 23:46:02.710  6350  6669 E [Native]OCEngine: 06-27 23:46:02.710 +0200 6669 [E] [oc_backtrace.cpp:76] (-2) - dumpping backtrace for client:700504862\n"
+        ver = LogCatGrep().get_version_code(line)
+        print ver
 
 
 
