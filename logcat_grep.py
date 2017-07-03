@@ -191,7 +191,7 @@ class LogCatGrep(object):
 
 
     def find_useful_crash(self):
-        return self.curr_version_code >= KEY_WORD_VERSION_CODE
+        return self.curr_version_code >= VERSION_CODE_BEGIN
 
 
     def on_file_readed(self,io, pckuserId, date):
@@ -208,8 +208,9 @@ class LogCatGrep(object):
 
             if KEY_WORD_VERSION_CODE in line:
                 self.curr_version_code = self.get_version_code(line)
-                print "get version code :" + str(self.curr_version_code)
+                #print "get version code :" + str(self.curr_version_code)
                 if self.find_useful_crash():
+                    print "find crash for version:" + str(self.curr_version_code)
                     self.back_trace_line.append('\n\n')
                     self.back_trace_line.append("[UserID]:{}\n".format(pckuserId))
                     self.back_trace_line.append(line)
