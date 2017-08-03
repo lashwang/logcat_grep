@@ -39,7 +39,7 @@ RECIPIENTS_TEST = ['swang@seven.com']
 
 KEY_WORD = "sig_handler signal: "
 KEY_WORD_VERSION_CODE = "dumpping backtrace for client:"
-VERSION_CODE_BEGIN = 700505280
+VERSION_CODE_BEGIN = 700505300
 
 #KEY_WORD = "send CTQD error"
 KEY_WORD_REMOVE = "sig_init"
