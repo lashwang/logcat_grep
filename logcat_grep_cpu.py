@@ -119,7 +119,7 @@ def toClientAddrHash(bytesArr):
 
 
 
-class LogCatGrep(object):
+class LogCatGrepCPU(object):
     def __init__(self):
         self.on_parse_started()
         self.skip_user_list = set()
