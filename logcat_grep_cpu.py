@@ -139,7 +139,7 @@ class LogCatGrepCPU(object):
 
     def send_email(self,grep_filename, if_test, grep_info):
         # zip the output file
-        path = 'output'
+        path = OUTPUT_DIR
         now = arrow.now()
         zip_file = '{}/output_{}.zip'.format(OUTPUT_DIR,self.time_str)
 
