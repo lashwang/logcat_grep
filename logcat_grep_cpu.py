@@ -275,7 +275,7 @@ class LogCatGrepCPU(object):
         for dir in dir_list:
             if os.path.exists(dir):
                 print 'start parsing dir:{}'.format(dir)
-                LogCatGrep().parse_dir(dir,start_date,end_date,if_test)
+                LogCatGrepCPU().parse_dir(dir,start_date,end_date,if_test)
                 break
 
     @staticmethod
@@ -283,7 +283,7 @@ class LogCatGrepCPU(object):
         now = arrow.utcnow()
         yesterday = now.replace(days=-1)
 
-        LogCatGrep.parse_log_server(yesterday.format('YYYY-MM-DD'),
+        LogCatGrepCPU.parse_log_server(yesterday.format('YYYY-MM-DD'),
                                     now.format('YYYY-MM-DD'),
                                     if_test)
 
