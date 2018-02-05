@@ -226,11 +226,7 @@ class LogCatGrepCPU(object):
                     if start < 0:
                         start = 0
                     # f.write("".join(alllines[start:end]))
-                    f_all.write("".join(alllines[start:line_number]))
-                    f_all.write("\n[UserID]:{}\n".format(pckuserId))
-                    f_all.write("".join(alllines[line_number:end]))
-
-                    # f.close()
+                    f_all.write("".join(alllines[start:end]))
                     f_all.close()
                     skip_lines = LOGCAT_AFTER_LINE
                     find_number = find_number + 1
@@ -409,7 +405,7 @@ class LogCatGrepCPU(object):
 
 
         if find:
-            print 'find high cpu users for file {}'.format(aggregated_log_file)
+            print 'find high cpu users for file {}, starting to send mail'.format(aggregated_log_file)
             self.send_email(aggregated_log_file,if_test,self)
             #time.sleep(1)
             self.user_info = dict()
