@@ -141,7 +141,7 @@ class LogCatGrepCPU(object):
         # zip the output file
         path = 'output'
         now = arrow.now()
-        zip_file = 'output/output_{}.zip'.format(self.time_str)
+        zip_file = '{}/output_{}.zip'.format(OUTPUT_DIR,self.time_str)
 
         myzip = ZipFile(zip_file, 'w')
         for f in listdir(path):
