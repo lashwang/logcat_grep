@@ -409,7 +409,7 @@ class LogCatGrep(object):
 
 
         if find:
-            print 'find crash for file {}'.format(aggregated_log_file)
+            print 'find high cpu users for file {}'.format(aggregated_log_file)
             self.send_email(aggregated_log_file,if_test,self)
             #time.sleep(1)
             self.user_info = dict()
