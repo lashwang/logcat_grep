@@ -35,7 +35,7 @@ RECIPIENTS_TEST = ['swang@seven.com']
 
 
 VERSION_CODE_BEGIN = 800506909
-KEY_WORD = "detect high cpu usage,version="+VERSION_CODE_BEGIN
+KEY_WORD = "detect high cpu usage,version={}".format(VERSION_CODE_BEGIN)
 #KEY_WORD_VERSION_CODE = "dumpping backtrace for client:"
 
 #KEY_WORD = "send CTQD error"
